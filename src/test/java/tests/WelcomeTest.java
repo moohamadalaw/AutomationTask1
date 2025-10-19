@@ -22,8 +22,8 @@ public class WelcomeTest extends BaseTest {
         HP.openHomePage();
     }
 
-    @Test
-    public void testE2E_CreateOrderFlow() throws InterruptedException {
+    @Test(enabled = false)
+    public void testE2E_CreateOrderFlowforLoginUser() throws InterruptedException {
         // Go TO Login Page
         Assert.assertTrue(HP.Welcome());
         HP.hoverOnSignIn();
@@ -96,6 +96,77 @@ public class WelcomeTest extends BaseTest {
         // Order Confirm Page
         OrderConfirmPage OCP = new OrderConfirmPage(driver);
         Assert.assertTrue(OCP.confirmEmail());
+
+    }
+
+    @Test
+    public void testE2E_CreateOrderFlowforGustUser() throws InterruptedException{
+
+        HP = new HomePage(driver);
+        Thread.sleep(4000);
+
+        Assert.assertTrue(HP.Welcome());
+
+        HP.closeCookieSection();
+
+        HP.search("Flowers");
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("mainContentTitle")));
+        Thread.sleep(6000);
+
+        // Product List Page
+        ProductListPage PLP = new ProductListPage(driver);
+        PLP.GoToPDP();
+
+        Thread.sleep(6000);
+
+        // Product Detailes Page
+        ProdactDetailesPage PDP = new ProdactDetailesPage(driver);
+        PDP.addToCart();
+
+        // Cart Page
+        CartPage CP = new CartPage(driver);
+        CP.goTOCheckoutPage();
+        Thread.sleep(6000);
+
+
+        ReturningCustomerCheckoutPage RCCP = new ReturningCustomerCheckoutPage(driver);
+        Thread.sleep(3000);
+        RCCP.clickGustUserButton();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("c-checkout-accordion__header-title")));
+        Thread.sleep(3000);
+        ShippingPage SP = new ShippingPage(driver);
+        SP.setEmailAddress("mohammad100@gmail.com");
+        SP.setFirstName("mohammad");
+        SP.setLastName("mohammad");
+        SP.setPhone("0594941152");
+        SP.setZipCode("10167");
+        SP.setStreetAddress("245 Park Ave Bldg 99, New York NY 10167-3000");
+        Thread.sleep(3000);
+        SP.goToDeliveryMethod();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("m-shipping-address-verfication__header-bar")));
+        Thread.sleep(6000);
+        SP.UseThisAddrisButtonClick();
+        Thread.sleep(6000);
+
+        DelevaryMethodPage DP = new DelevaryMethodPage(driver);
+        DP.goToPaymentMethod();
+
+        Thread.sleep(9000);
+
+        // Payament Page
+        PayamentPage PM = new PayamentPage(driver);
+        PM.setCartNumber("4000060000000006");
+        PM.setExp("03/30");
+        Thread.sleep(6000);
+        PM.placeOrder();
+        Thread.sleep(9000);
+
+        // Order Confirm Page
+        OrderConfirmPage OCP = new OrderConfirmPage(driver);
+        Assert.assertTrue(OCP.confirmEmail());
+
 
     }
 }
